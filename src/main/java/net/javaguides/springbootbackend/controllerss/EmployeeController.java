@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 @CrossOrigin("*")
 @RestController
-@RequestMapping("/api/getEmployees")
+@RequestMapping("/api/employees")
 public class EmployeeController {
     @Autowired
     public EmployeeRepository repo;
@@ -18,7 +18,7 @@ public class EmployeeController {
     }
 //build create employee rest api
 @PostMapping
-    public Employee createEmployee(Employee employee){
+    public Employee createEmployee(@RequestBody Employee employee){
         return repo.save(employee);
     }
 }
