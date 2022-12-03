@@ -9,14 +9,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@CrossOrigin("*")
 @RestController
-@RequestMapping("/api/getEmployees")
+@RequestMapping("api/employees")
 public class EmployeeController {
     @Autowired
     public EmployeeRepository repo;
     @GetMapping
-    public List<Employee> getAllStudents(){
+    public List<Employee> getAllEmployees(){
         return repo.findAll();
     }
     @GetMapping("{id}")
