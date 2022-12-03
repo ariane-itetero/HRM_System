@@ -1,13 +1,14 @@
 package net.javaguides.springbootbackend.models;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Getter
 @Setter
+@Builder
+@Data
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name="employees")
@@ -22,4 +23,5 @@ public class Employee {
     private  String lastName;
     @Column(name = "email_id", unique = true)
     private String emailId;
+
 }
