@@ -7,7 +7,7 @@ const AddEmployeeComponent = () => {
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
     const [emailId, setEmailId] = useState('')
-    const history = useNavigate();
+    const navigate = useNavigate();
     const {id} = useParams();
 
     const saveOrUpdateEmployee = (e) => {
@@ -17,7 +17,7 @@ const AddEmployeeComponent = () => {
 
         if(id){
             EmployeeService.updateEmployee(id, employee).then((response) => {
-                history.push('/employees')
+                navigate('/employees')
             }).catch(error => {
                 console.log(error)
             })
@@ -27,7 +27,7 @@ const AddEmployeeComponent = () => {
 
                 console.log(response.data)
     
-                history.push('/employees');
+                navigate('/employees');
     
             }).catch(error => {
                 console.log(error)
