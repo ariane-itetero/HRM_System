@@ -1,37 +1,39 @@
-package net.javaguides.springbootbackend.repository;
+package net.javaguides.springbootbackend;
 
-import lombok.Builder;
-import org.assertj.core.api.Assertions;
 import net.javaguides.springbootbackend.models.Employee;
 import net.javaguides.springbootbackend.repository.EmployeeRepository;
-import org.junit.Test;
-import org.junit.jupiter.api.*;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
 import org.springframework.test.annotation.Rollback;
+
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @DataJpaTest
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class EmployeeRepoTesting {
+public class EmployeeRepositoryTests {
 
     @Autowired
     private EmployeeRepository employeeRepository;
 
     // JUnit test for saveEmployee
-
     @Test
     @Order(1)
-    @Rollback(value = false)
+    @Rollback(value = true)
     public void saveEmployeeTest(){
 
         Employee employee = Employee.builder()
                 .firstName("Ramesh")
                 .lastName("Fadatare")
-                .emailId("ramesh@gmail.com")
+                .email("ramesh@gmail.com")
                 .build();
 
         employeeRepository.save(employee);
@@ -41,7 +43,8 @@ public class EmployeeRepoTesting {
 
     @Test
     @Order(2)
-    public void getEmployeeTest(){
+
+    public void getEmployeeTest ()  {
 
         Employee employee = employeeRepository.findById(1L).get();
 
@@ -51,32 +54,33 @@ public class EmployeeRepoTesting {
 
     @Test
     @Order(3)
+
     public void getListOfEmployeesTest(){
 
         List<Employee> employees = employeeRepository.findAll();
 
-        Assertions.assertThat(employees.size()).isGreaterThan(0);
+        Assertions.assertThat(employees.size()).isEqualTo(1L);
 
     }
 
     @Test
     @Order(4)
-    @Rollback(value = false)
+   // @Rollback(value = false)
     public void updateEmployeeTest(){
 
-        Employee employee = employeeRepository.findById(2L).get();
+        Employee employee = employeeRepository.findById(1L).get();
 
-        employee.setEmailId("ram@gmail.com");
+        employee.setEmail("ram@gmail.com");
 
         Employee employeeUpdated =  employeeRepository.save(employee);
 
-        Assertions.assertThat(employeeUpdated.getEmailId()).isEqualTo("ram@gmail.com");
+        Assertions.assertThat(employeeUpdated.getEmail()).isEqualTo("ram@gmail.com");
 
     }
 
     @Test
     @Order(5)
-    @Rollback(value = false)
+    @Rollback(value = true)
     public void deleteEmployeeTest(){
 
         Employee employee = employeeRepository.findById(1L).get();
@@ -85,15 +89,15 @@ public class EmployeeRepoTesting {
 
         //employeeRepository.deleteById(1L);
 
-        Employee employeee = null;
+        Employee employee1 = null;
 
-        Optional<Employee> optionalEmployee = employeeRepository.findByEmailId("ram@gmail.com");
+        Optional<Employee> optionalEmployee = employeeRepository.findByEmail("ram@gmail.com");
 
         if(optionalEmployee.isPresent()){
-            employeee = optionalEmployee.get();
+            employee1 = optionalEmployee.get();
         }
 
-        Assertions.assertThat(employeee).isNull();
+        Assertions.assertThat(employee1).isNull();
     }
 
 }

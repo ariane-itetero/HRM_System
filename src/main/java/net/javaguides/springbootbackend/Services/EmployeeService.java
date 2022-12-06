@@ -1,9 +1,10 @@
 package net.javaguides.springbootbackend.Services;
 import net.javaguides.springbootbackend.models.Employee;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.List;
 import java.util.Optional;
-
+@Configurable
 public interface EmployeeService {
     Employee saveEmployee(Employee employee);
     List<Employee> getAllEmployees();

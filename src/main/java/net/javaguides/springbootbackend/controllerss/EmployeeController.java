@@ -3,6 +3,7 @@ package net.javaguides.springbootbackend.controllerss;
 import net.javaguides.springbootbackend.Services.EmployeeService;
 import net.javaguides.springbootbackend.models.Employee;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/employees")
 public class EmployeeController {
+    @Autowired
     private EmployeeService employeeService;
 
     public EmployeeController(EmployeeService employeeService) {
@@ -44,7 +46,7 @@ public class EmployeeController {
 
                     savedEmployee.setFirstName(employee.getFirstName());
                     savedEmployee.setLastName(employee.getLastName());
-                    savedEmployee.setEmailId(employee.getEmailId());
+                    savedEmployee.setEmail(employee.getEmail());
 
                     Employee updatedEmployee = employeeService.updateEmployee(savedEmployee);
                     return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
