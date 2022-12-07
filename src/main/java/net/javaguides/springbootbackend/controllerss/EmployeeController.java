@@ -1,5 +1,6 @@
 package net.javaguides.springbootbackend.controllerss;
 
+import lombok.extern.slf4j.Slf4j;
 import net.javaguides.springbootbackend.Services.EmployeeService;
 import net.javaguides.springbootbackend.models.Employee;
 
@@ -21,9 +22,9 @@ public class EmployeeController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Employee createEmployee(@RequestBody Employee employee){
-        return employeeService.saveEmployee(employee);
+    public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee){
+         employeeService.saveEmployee(employee);
+         return ResponseEntity.status(HttpStatus.CREATED).body(employee);
     }
 
     @GetMapping
@@ -63,4 +64,6 @@ public class EmployeeController {
         return new ResponseEntity<String>("Employee deleted successfully!.", HttpStatus.OK);
 
     }
+
+
 }

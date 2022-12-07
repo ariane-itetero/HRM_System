@@ -1,12 +1,10 @@
-package net.javaguides.springbootbackend;
+package net.javaguides.springbootbackend.repository;
 
 import net.javaguides.springbootbackend.models.Employee;
 import net.javaguides.springbootbackend.repository.EmployeeRepository;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -59,7 +57,7 @@ public class EmployeeRepositoryTests {
 
         List<Employee> employees = employeeRepository.findAll();
 
-        Assertions.assertThat(employees.size()).isEqualTo(1L);
+        Assertions.assertThat(employees.size()).isGreaterThan(0);
 
     }
 
