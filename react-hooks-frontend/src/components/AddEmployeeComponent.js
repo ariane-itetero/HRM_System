@@ -6,14 +6,14 @@ const AddEmployeeComponent = () => {
 
     const [firstName, setFirstName] = useState('')
     const [lastName, setLastName] = useState('')
-    const [emailId, setEmailId] = useState('')
+    const [email, setEmail] = useState('')
     const navigate = useNavigate();
     const {id} = useParams();
 
     const saveOrUpdateEmployee = (e) => {
         e.preventDefault();
 
-        const employee = {firstName, lastName, emailId}
+        const employee = {firstName, lastName, email}
 
         if(id){
             EmployeeService.updateEmployee(id, employee).then((response) => {
@@ -41,7 +41,7 @@ const AddEmployeeComponent = () => {
         EmployeeService.getEmployeeById(id).then((response) =>{
             setFirstName(response.data.firstName)
             setLastName(response.data.lastName)
-            setEmailId(response.data.emailId)
+            setEmail(response.data.email)
         }).catch(error => {
             console.log(error)
         })
@@ -98,16 +98,16 @@ const AddEmployeeComponent = () => {
                                     <input
                                         type = "email"
                                         placeholder = "Enter email Id"
-                                        name = "emailId"
+                                        name = "email"
                                         className = "form-control"
-                                        value = {emailId}
-                                        onChange = {(e) => setEmailId(e.target.value)}
+                                        value = {email}
+                                        onChange = {(e) => setEmail(e.target.value)}
                                     >
                                     </input>
                                 </div>
 
-                                <button className = "btn btn-success" onClick = {(e) => saveOrUpdateEmployee(e)} >Submit </button>
-                                <Link to="/employees" className="btn btn-danger"> Cancel </Link>
+                                <button className = "btn btn-success " onClick = {(e) => saveOrUpdateEmployee(e)} >Submit </button>
+                                <Link to="/employees" className="btn btn-danger"  style = {{marginLeft:"20px"}}> Cancel </Link>
                             </form>
 
                         </div>
