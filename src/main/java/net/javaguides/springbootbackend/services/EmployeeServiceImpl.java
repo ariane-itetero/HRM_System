@@ -1,4 +1,4 @@
-package net.javaguides.springbootbackend.Services;
+package net.javaguides.springbootbackend.services;
 
 import net.javaguides.springbootbackend.exceptions.ResourceNotFoundException;
 import net.javaguides.springbootbackend.models.Employee;
@@ -15,7 +15,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     private EmployeeRepository employeeRepository;
     @Autowired
-    public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
+    public EmployeeServiceImpl() {
         this.employeeRepository = employeeRepository;
     }
 

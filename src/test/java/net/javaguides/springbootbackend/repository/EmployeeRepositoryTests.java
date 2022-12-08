@@ -12,7 +12,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Rollback;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @DataJpaTest
@@ -29,9 +28,9 @@ public class EmployeeRepositoryTests {
     public void saveEmployeeTest(){
 
         Employee employee = Employee.builder()
-                .firstName("Ramesh")
-                .lastName("Fadatare")
-                .email("ramesh@gmail.com")
+                .firstName("Ariane")
+                .lastName("Itetero")
+                .email("arianeitetero@gmail.com")
                 .build();
 
         employeeRepository.save(employee);
@@ -68,11 +67,11 @@ public class EmployeeRepositoryTests {
 
         Employee employee = employeeRepository.findById(1L).get();
 
-        employee.setEmail("ram@gmail.com");
+        employee.setEmail("arianeitetero@gmail.com");
 
         Employee employeeUpdated =  employeeRepository.save(employee);
 
-        Assertions.assertThat(employeeUpdated.getEmail()).isEqualTo("ram@gmail.com");
+        Assertions.assertThat(employeeUpdated.getEmail()).isEqualTo("arianeitetero@gmail.com");
 
     }
 
@@ -89,7 +88,7 @@ public class EmployeeRepositoryTests {
 
         Employee employee1 = null;
 
-        Optional<Employee> optionalEmployee = employeeRepository.findByEmail("ram@gmail.com");
+        Optional<Employee> optionalEmployee = employeeRepository.findByEmail("arianeitetero@gmail.com");
 
         if(optionalEmployee.isPresent()){
             employee1 = optionalEmployee.get();

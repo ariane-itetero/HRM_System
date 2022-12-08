@@ -1,56 +1,53 @@
-package net.javaguides.springbootbackend.controllerss;
+package net.javaguides.springbootbackend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.javaguides.springboot.model.Employee;
-import net.javaguides.springboot.repository.EmployeeRepository;
-import net.javaguides.springbootbackend.models.Employee;
-import net.javaguides.springbootbackend.repository.EmployeeRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 
-import java.util.ArrayList;
+import net.javaguides.springbootbackend.services.EmployeeServiceImpl;
+import net.javaguides.springbootbackend.models.Employee;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootApplication
+@RunWith(SpringRunner.class)
+@WebMvcTest(EmployeeController.class)
 public class EmployeeControllerTests{
+
+    @MockBean
+    private EmployeeServiceImpl employeeServiceMock;
 
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
-    private EmployeeRepository employeeRepository;
-
-    @Autowired
     private ObjectMapper objectMapper;
 
-    @BeforeEach
-    void setup(){
-        employeeRepository.deleteAll();
-    }
 
     @Test
     public void givenEmployeeObject_whenCreateEmployee_thenReturnSavedEmployee() throws Exception{
 
         // given - precondition or setup
         Employee employee = Employee.builder()
-                .firstName("Ramesh")
-                .lastName("Fadatare")
-                .email("ramesh@gmail.com")
+                .firstName("Ariane")
+                .lastName("Itetero")
+                .email("arianeitetero@gmail.com")
                 .build();
 
         // when - action or behaviour that we are going test
@@ -70,36 +67,35 @@ public class EmployeeControllerTests{
 
     }
 
-    // JUnit test for Get All employees REST API
     @Test
-    public void givenListOfEmployees_whenGetAllEmployees_thenReturnEmployeesList() throws Exception{
-        // given - precondition or setup
-        List<Employee> listOfEmployees = new ArrayList<>();
-        listOfEmployees.add(Employee.builder().firstName("Ramesh").lastName("Fadatare").email("ramesh@gmail.com").build());
-        listOfEmployees.add(Employee.builder().firstName("Tony").lastName("Stark").email("tony@gmail.com").build());
-        employeeRepository.saveAll(listOfEmployees);
-        // when -  action or the behaviour that we are going test
-        ResultActions response = mockMvc.perform(get("/api/employees"));
+    public void getAll_success() throws Exception {
+        List<Employee> asList = Arrays.asList(new Employee(1,"Ariane","Itetero","arianeitetero@gmail.com"),
+                new Employee(2,"Colombe","Igihozo","colombe@gmail.com"));
+        when(employeeServiceMock.getAllEmployees()).thenReturn(asList);
 
-        // then - verify the output
-        response.andExpect(status().isOk())
-                .andDo(print())
-                .andExpect(jsonPath("$.size()",
-                        is(listOfEmployees.size())));
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .get("/api/employees")
+                .accept(MediaType.APPLICATION_JSON);
+
+        MvcResult result = mockMvc
+                .perform(request)
+                .andExpect(status().isOk())
+                .andExpect(content().json("[{\"id\":1,\"firstName\":\"Ariane\",\"lastName\":\"Itetero\",\"email\":\"arianeitetero@gmail.com\"},{\"id\":2,\"firstName\":\"Colombe\",\"lastName\":\"Igihozo\",\"email\":\"colombe@gmail.com\"}]"))
+                .andReturn();
 
     }
-
-    // positive scenario - valid employee id
-    // JUnit test for GET employee by id REST API
+//
+//     positive scenario - valid employee id
+//     JUnit test for GET employee by id REST API
     @Test
     public void givenEmployeeId_whenGetEmployeeById_thenReturnEmployeeObject() throws Exception{
         // given - precondition or setup
         Employee employee = Employee.builder()
-                .firstName("Ramesh")
-                .lastName("Fadatare")
-                .email("ramesh@gmail.com")
+                .firstName("Ariane")
+                .lastName("Itetero")
+                .email("arianeitetero@gmail.com")
                 .build();
-        employeeRepository.save(employee);
+        employeeServiceMock.saveEmployee(employee);
 
         // when -  action or the behaviour that we are going test
         ResultActions response = mockMvc.perform(get("/api/employees/{id}", employee.getId()));
@@ -124,7 +120,7 @@ public class EmployeeControllerTests{
                 .lastName("Fadatare")
                 .email("ramesh@gmail.com")
                 .build();
-        employeeRepository.save(employee);
+        employeeServiceMock.saveEmployee(employee);
 
         // when -  action or the behaviour that we are going test
         ResultActions response = mockMvc.perform(get("/api/employees/{id}", employeeId));
@@ -140,16 +136,16 @@ public class EmployeeControllerTests{
     public void givenUpdatedEmployee_whenUpdateEmployee_thenReturnUpdateEmployeeObject() throws Exception{
         // given - precondition or setup
         Employee savedEmployee = Employee.builder()
-                .firstName("Ramesh")
-                .lastName("Fadatare")
-                .email("ramesh@gmail.com")
+                .firstName("Ariane")
+                .lastName("Itetero")
+                .email("arianeitetero@gmail.com")
                 .build();
-        employeeRepository.save(savedEmployee);
+        employeeServiceMock.saveEmployee(savedEmployee);
 
         Employee updatedEmployee = Employee.builder()
-                .firstName("Ram")
-                .lastName("Jadhav")
-                .email("ram@gmail.com")
+                .firstName("Ariana")
+                .lastName("Atete")
+                .email("atete@gmail.com")
                 .build();
 
         // when -  action or the behaviour that we are going test
@@ -172,16 +168,16 @@ public class EmployeeControllerTests{
         // given - precondition or setup
         long employeeId = 1L;
         Employee savedEmployee = Employee.builder()
-                .firstName("Ramesh")
-                .lastName("Fadatare")
-                .email("ramesh@gmail.com")
+                .firstName("Ariane")
+                .lastName("Itetero")
+                .email("arianeitetero@gmail.com")
                 .build();
-        employeeRepository.save(savedEmployee);
+        employeeServiceMock.saveEmployee(savedEmployee);
 
         Employee updatedEmployee = Employee.builder()
-                .firstName("Ram")
-                .lastName("Jadhav")
-                .email("ram@gmail.com")
+                .firstName("Ariana")
+                .lastName("Atete")
+                .email("atete@gmail.com")
                 .build();
 
         // when -  action or the behaviour that we are going test
@@ -199,11 +195,11 @@ public class EmployeeControllerTests{
     public void givenEmployeeId_whenDeleteEmployee_thenReturn200() throws Exception{
         // given - precondition or setup
         Employee savedEmployee = Employee.builder()
-                .firstName("Ramesh")
-                .lastName("Fadatare")
-                .email("ramesh@gmail.com")
+                .firstName("Ariane")
+                .lastName("Itetero")
+                .email("arianeitetero@gmail.com")
                 .build();
-        employeeRepository.save(savedEmployee);
+        employeeServiceMock.saveEmployee(savedEmployee);
 
         // when -  action or the behaviour that we are going test
         ResultActions response = mockMvc.perform(delete("/api/employees/{id}", savedEmployee.getId()));

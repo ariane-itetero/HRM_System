@@ -1,4 +1,4 @@
-package net.javaguides.springbootbackend.Services;
+package net.javaguides.springbootbackend.services;
 import net.javaguides.springbootbackend.models.Employee;
 import org.springframework.beans.factory.annotation.Configurable;
 

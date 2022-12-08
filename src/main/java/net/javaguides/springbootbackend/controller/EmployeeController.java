@@ -1,7 +1,6 @@
-package net.javaguides.springbootbackend.controllerss;
+package net.javaguides.springbootbackend.controller;
 
-import lombok.extern.slf4j.Slf4j;
-import net.javaguides.springbootbackend.Services.EmployeeService;
+import net.javaguides.springbootbackend.services.EmployeeService;
 import net.javaguides.springbootbackend.models.Employee;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +19,10 @@ public class EmployeeController {
     public EmployeeController(EmployeeService employeeService) {
         this.employeeService = employeeService;
     }
-
     @PostMapping
-    public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee){
-         employeeService.saveEmployee(employee);
-         return ResponseEntity.status(HttpStatus.CREATED).body(employee);
+    @ResponseStatus(HttpStatus.CREATED)
+    public Employee createEmployee(@RequestBody Employee employee){
+        return employeeService.saveEmployee(employee);
     }
 
     @GetMapping
