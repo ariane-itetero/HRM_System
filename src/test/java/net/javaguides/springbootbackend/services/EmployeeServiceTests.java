@@ -22,6 +22,7 @@ import java.util.Optional;
 public class EmployeeServiceTests {
 
 
+    public static final UpdateEmployeeDto DTO = new UpdateEmployeeDto(1L, "Ariane", "Itetero", "arianeitetero@gmail.com");
     @Mock
     private EmployeeRepository employeeRepositoryMock;
 
@@ -37,39 +38,30 @@ public class EmployeeServiceTests {
     }
 
 
-//    @Test
-//    public void update_Success() {
-//        UpdateEmployeeDto dto = new UpdateEmployeeDto();
-//        Employee employee = new Employee(4L, "Naillah", "Ineza", "ineza@gmail.com");
-//        when(employeeRepositoryMock.findById(4L)).thenReturn(Optional.of(employee));
-//        when(employeeRepositoryMock.existsByEmail(dto.getEmail())).thenReturn(true);
-//        when(employeeRepositoryMock.save(employee)).thenReturn(employee);
-//
-//        ResponseEntity<?> updateItem = employeeService.updateEmployee(20L, dto);
-//        assertTrue(updateItem.getStatusCode().is2xxSuccessful());
-//
-//    }
+    @Test
+    public void update_Success() {
+        UpdateEmployeeDto dto = new UpdateEmployeeDto();
+        Employee employee = new Employee(1L, "Ariane", "Itetero", "arianeitetero@gmail.com");
+        when(employeeRepositoryMock.findById(1L)).thenReturn(Optional.of(employee));
+        when(employeeRepositoryMock.existsByEmail(dto.getEmail())).thenReturn(employee);
+        when(employeeRepositoryMock.save(employee)).thenReturn(employee);
 
+//        ResponseEntity<?> updateEmployee = employeeService.updateEmployee(DTO);
+//        assertTrue(updateEmployee.getStatusCode().is2xxSuccessful());
+
+    }
+//
 //    @Test
 //    public void update_404() {
-//        UpdateItemDto dto = new UpdateItemDto("Shoes", 1000, 5);
-//        when(employeeRepositoryMock.findById(1)).thenReturn(Optional.empty());
+//       UpdateEmployeeDto dto = new UpdateEmployeeDto(1L, "Ariane", "Itetero", "arianeitetero@gmail.com");
+//        when(employeeRepositoryMock.findById(1l)).thenReturn(Optional.empty());
 //
-//        ResponseEntity<?> updateItem = employeeService.updateItem(1, dto);
+//        ResponseEntity<?> updateItem = employeeService.updateEmployee(1, dto);
 //        assertTrue(updateItem.getStatusCodeValue()==404);
 //
 //    }
-//
-//    @Test
-//    public void update_NameExists() {
-//        UpdateItemDto dto = new UpdateItemDto("Clothes", 1000, 5);
-//        Item item = new Item(1, "Shoes", 1000, 5);
-//        when(employeeRepositoryMock.findById(1)).thenReturn(Optional.of(item));
-//        when(employeeRepositoryMock.existsByName(dto.getName())).thenReturn(true);
-//
-//        ResponseEntity<?> updateItem = employeeService.updateItem(1, dto);
-//        assertTrue(updateItem.getStatusCodeValue()==400);
-//    }
+
+
 //
 //    @Test
 //    public void update_sauve() {
