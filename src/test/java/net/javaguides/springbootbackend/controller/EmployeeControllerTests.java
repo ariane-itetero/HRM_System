@@ -2,6 +2,8 @@ package net.javaguides.springbootbackend.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import net.javaguides.springbootbackend.services.EmployeeServiceImpl;
 import net.javaguides.springbootbackend.models.Employee;
 
@@ -17,11 +19,14 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -39,7 +44,7 @@ public class EmployeeControllerTests{
     @Autowired
     private ObjectMapper objectMapper;
 
-
+    public static final MediaType APPLICATION_JSON_UTF8 = new MediaType(MediaType.APPLICATION_JSON.getType(), MediaType.APPLICATION_JSON.getSubtype(), Charset.forName("utf8"));
     @Test
     public void givenEmployeeObject_whenCreateEmployee_thenReturnSavedEmployee() throws Exception{
 
@@ -50,20 +55,14 @@ public class EmployeeControllerTests{
                 .email("arianeitetero@gmail.com")
                 .build();
 
-        // when - action or behaviour that we are going test
-        ResultActions response = mockMvc.perform(post("/api/employees")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(employee)));
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson=ow.writeValueAsString(employee);
 
-        // then - verify the result or output using assert statements
-        response.andDo(print()).
-                andExpect(status().isCreated())
-                .andExpect(jsonPath("$.firstName",
-                        is(employee.getFirstName())))
-                .andExpect(jsonPath("$.lastName",
-                        is(employee.getLastName())))
-                .andExpect(jsonPath("$.email",
-                        is(employee.getEmail())));
+        // when -  action or the behaviour that we are going test
+        mockMvc.perform(post("/api/employees", employee.getId()).contentType(APPLICATION_JSON_UTF8).content(requestJson)
+        ).andExpect(status().isCreated());
 
     }
 
@@ -84,8 +83,7 @@ public class EmployeeControllerTests{
                 .andReturn();
 
     }
-//
-//     positive scenario - valid employee id
+
 //     JUnit test for GET employee by id REST API
     @Test
     public void givenEmployeeId_whenGetEmployeeById_thenReturnEmployeeObject() throws Exception{
@@ -97,15 +95,17 @@ public class EmployeeControllerTests{
                 .build();
         employeeServiceMock.saveEmployee(employee);
 
-        // when -  action or the behaviour that we are going test
-        ResultActions response = mockMvc.perform(get("/api/employees/{id}", employee.getId()));
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
+        String requestJson=ow.writeValueAsString(employee);
 
-        // then - verify the output
-        response.andExpect(status().isOk())
-                .andDo(print())
-                .andExpect(jsonPath("$.firstName", is(employee.getFirstName())))
-                .andExpect(jsonPath("$.lastName", is(employee.getLastName())))
-                .andExpect(jsonPath("$.email", is(employee.getEmail())));
+        // when -  action or the behaviour that we are going test
+         mockMvc.perform(get("/api/employees/{id}", employee.getId()).contentType(APPLICATION_JSON_UTF8).content(requestJson)
+                ).andExpect(status().isNotFound());
+
+
+
 
     }
 
@@ -131,36 +131,6 @@ public class EmployeeControllerTests{
 
     }
 
-    // JUnit test for update employee REST API - positive scenario
-    @Test
-    public void givenUpdatedEmployee_whenUpdateEmployee_thenReturnUpdateEmployeeObject() throws Exception{
-        // given - precondition or setup
-        Employee savedEmployee = Employee.builder()
-                .firstName("Ariane")
-                .lastName("Itetero")
-                .email("arianeitetero@gmail.com")
-                .build();
-        employeeServiceMock.saveEmployee(savedEmployee);
-
-        Employee updatedEmployee = Employee.builder()
-                .firstName("Ariana")
-                .lastName("Atete")
-                .email("atete@gmail.com")
-                .build();
-
-        // when -  action or the behaviour that we are going test
-        ResultActions response = mockMvc.perform(put("/api/employees/{id}", savedEmployee.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(updatedEmployee)));
-
-
-        // then - verify the output
-        response.andExpect(status().isOk())
-                .andDo(print())
-                .andExpect(jsonPath("$.firstName", is(updatedEmployee.getFirstName())))
-                .andExpect(jsonPath("$.lastName", is(updatedEmployee.getLastName())))
-                .andExpect(jsonPath("$.email", is(updatedEmployee.getEmail())));
-    }
 
     // JUnit test for update employee REST API - negative scenario
     @Test
